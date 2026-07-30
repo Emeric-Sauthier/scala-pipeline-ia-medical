@@ -7,7 +7,7 @@ Contributeurs : Alexis GODARD, Emeric SAUTHIER, Thomas SAYEN
 Des données sont récupérées à partir de capteurs intégrés à des lits d'hopital. Les capteurs peuvent subir des perturbations et envoyer des valeur aberrantes, en double ou même ne rien envoyer (si débranché par exemple).
 L'équipe soignante souhaite extraire des statistiques par patient et par service, afin d'exporter un rapport au format JSON exploitable sur un tableau de bord.
 
-Il sera donc important de nettoyer les données avant de les traiter.
+Il sera donc important de nettoyer les données avant de les traiter.  
 Voici une simplification du flux de données :
 Collecte -> Nettoyage -> Transformation -> Aggrégation -> Export
 
