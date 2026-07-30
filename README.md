@@ -68,3 +68,22 @@ object IndicateurVigilance {
     case object Alerte extends IndicateurVigilance
 } 
 ```
+
+### Indicateurs dérivés
+
+Les indicateurs dérivés sont des valeurs calculées à partir d'une ou plusieurs mesure(s).
+
+Voici la liste des indicateurs possibles :
+- Pression pulsée (= pression systolique - pression diastolique)
+- Pression artérielle moyenne (= pression diastolique + (pression systolique - pression diastolique) / 3)
+
+Ces indicateurs seront représentés sous forme de fonctions retournant une `Option`.
+
+Exemple :
+```scala
+def pressionPulsee(m: Mesure): Option[Int] =
+  for {
+    systolique  <- m.tensionSystolique
+    diastolique <- m.tensionDiastolique
+  } yield systolique - diastolique
+```
