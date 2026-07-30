@@ -9,7 +9,6 @@ lazy val root = (project in file("."))
   .settings(
     name := "scala-pipeline-ia-medical",
     libraryDependencies ++= Seq(
-      upickle,
       munit % Test
     ),
     // UTF-8 explicite : les sources contiennent des accents et « °C ».

@@ -1,27 +1,26 @@
-import storage.{EcrivainJson, LecteurCsv}
+import storage.LecteurCsv
 
+/**
+ * Point d'entrée du pipeline — coquille impérative.
+ *
+ * En l'état, seule la lecture du fichier est branchée. Le parsing, le nettoyage,
+ * la transformation, l'agrégation puis l'export viendront consommer les lignes
+ * renvoyées ici.
+ */
 object Main {
 
   private val CheminEntree = "data/dataset_patients_exemple.csv"
-  private val CheminSortie = "out/rapport.json"
 
-  def main(arguments: Array[String]): Unit = {
-    val resultat = for {
-      lecture <- LecteurCsv.lire(LecteurCsv.chemin(CheminEntree))
+  def main(arguments: Array[String]): Unit =
+    LecteurCsv.lire(CheminEntree) match {
+      case Right(lignes) =>
+        println(s"Source : $CheminEntree")
+        println(s"Lignes : ${lignes.size}")
 
-      ecrit <- EcrivainJson.exporter(EcrivainJson.chemin(CheminSortie), lecture.mesures)
-    } yield (lecture, ecrit)
-
-    resultat match {
-      case Right((lecture, fichier)) =>
-        println(s"Lecture   : ${lecture.mesures.size} mesure(s) sur ${lecture.lignesLues} ligne(s)")
-        println(s"Parsing   : ${lecture.erreurs.size} ligne(s) illisible(s)")
-        lecture.erreurs.foreach(erreur => println(s"            ligne ${erreur.numeroLigne} : ${erreur.message}"))
-        println(s"Export    : $fichier")
+      // Les étapes suivantes du pipeline s'inséreront ici, en consommant `lignes`.
 
       case Left(erreur) =>
         System.err.println(s"Échec : ${erreur.message}")
         sys.exit(1)
     }
-  }
 }
