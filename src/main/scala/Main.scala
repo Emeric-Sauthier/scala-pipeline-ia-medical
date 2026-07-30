@@ -21,6 +21,7 @@ object Main {
           case (bad, good) => {
             println(s"${bad.size} lignes invalides")
             println(s"${good.size} lignes valides")
+            bad.foreach(e => { println(s"[ERREUR]: ${e.message}") })
           }
 
 
