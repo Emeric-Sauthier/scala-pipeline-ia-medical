@@ -1,5 +1,6 @@
 package pipeline
 
+import domain.ObservationMesure
 import domain.IndicateurVigilance
 import domain.IndicateurVigilance._
 import domain.SeuilsVigilance._
@@ -43,4 +44,13 @@ object Classification {
         case v if v < Spo2.normalMin => Surveillance
         case _ => Normal
     }
+
+    def observerMesure(mesure: Mesure): ObservationMesure =
+        ObservationMesure(
+            frequenceCardiaque = mesure.frequenceCardiaque.map(classerFrequenceCardiaque),
+            tensionSystolique = mesure.tensionSystolique.map(classerTensionSystolique),
+            tensionDiastolique = mesure.tensionDiastolique.map(classerTensionDiastolique),
+            temperature = mesure.temperature.map(classerTemperature),
+            spo2 = mesure.spo2.map(classerSpo2)
+        )
 }
