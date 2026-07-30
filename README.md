@@ -25,6 +25,23 @@ Répartition des rôles :
 - Emeric => Transformation des données + Aggrégation + Tests
 - Thomas => Nettoyage des données + Tests
 
+## Architecture du projet
+
+src/
+├── main/scala/
+│   ├── domain/
+│   │   └── ...
+│   ├── storage/
+│   │   └── ...
+│   ├── pipeline/
+│   │   └── ...
+│   └── Main.scala
+└── test/scala/
+    ├── storage/
+    │   └── ...
+    ├── pipeline/
+        └── ...
+
 ## Modélisation
 
 ### Mesures
