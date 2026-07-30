@@ -1,11 +1,15 @@
 package domain
 
-sealed trait IndicateurVigilance
+sealed trait IndicateurVigilance {
+    def severite: Int
+}
 
 object IndicateurVigilance {
-    case object Normal extends IndicateurVigilance
-    case object Surveillance extends IndicateurVigilance
-    case object Alerte extends IndicateurVigilance
+    case object Normal extends IndicateurVigilance { val severite = 0 }
+    case object Surveillance extends IndicateurVigilance { val severite = 1 }
+    case object Alerte extends IndicateurVigilance { val severite = 2 }
+
+    given Ordering[IndicateurVigilance] = Ordering.by[IndicateurVigilance, Int](_.severite)
 }
 
 object SeuilsVigilance {
