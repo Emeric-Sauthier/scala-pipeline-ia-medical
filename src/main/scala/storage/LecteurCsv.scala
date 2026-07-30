@@ -18,8 +18,7 @@ import domain.ErreurPipeline
  * d'en-tête, pas de conversion de type, pas de filtrage des lignes vides, pas de
  * tri. Tout cela relève des étapes suivantes du pipeline.
  *
- * C'est le seul point d'accès au disque en lecture du programme, et la seule
- * fonction impure de la couche.
+ * C'est le seul point d'accès au disque en lecture du programme.
  */
 object LecteurCsv {
 
@@ -39,33 +38,7 @@ object LecteurCsv {
   def lire(chemin: String): Either[ErreurPipeline, List[String]] =
     Try(Files.readAllLines(Paths.get(chemin), StandardCharsets.UTF_8).asScala.toList)
       .fold(
-        erreur => Left(ErreurPipeline.LectureImpossible(chemin, cause(chemin, erreur))),
+        erreur => Left(ErreurPipeline.LectureImpossible(chemin, Diagnostic.cause(chemin, erreur))),
         lignes => Right(lignes)
       )
-
-  /**
-   * Traduit l'exception Java en cause lisible.
-   *
-   * Le `getMessage` de `NoSuchFileException` ne contient que le chemin : sans
-   * cette traduction, le message final répéterait deux fois le même chemin sans
-   * rien expliquer.
-   */
-  private def cause(chemin: String, erreur: Throwable): String =
-    erreur match {
-      case _: java.nio.file.NoSuchFileException => "fichier introuvable"
-      case _: java.nio.file.InvalidPathException => "chemin invalide"
-      case _: java.nio.charset.CharacterCodingException => "le fichier n'est pas encodé en UTF-8"
-
-      // Sous Windows, lire un dossier lève AccessDeniedException. « Accès refusé »
-      // serait trompeur pour ce qui est le plus souvent une faute de frappe dans
-      // le chemin, d'où la distinction.
-      case _: java.nio.file.AccessDeniedException =>
-        if (estUnDossier(chemin)) "le chemin désigne un dossier, pas un fichier"
-        else "accès refusé"
-
-      case _ => Option(erreur.getMessage).filter(_.nonEmpty).getOrElse(erreur.getClass.getSimpleName)
-    }
-
-  private def estUnDossier(chemin: String): Boolean =
-    Try(Files.isDirectory(Paths.get(chemin))).getOrElse(false)
 }
