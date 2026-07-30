@@ -1,6 +1,7 @@
 package domainTest
 
 import org.scalatest.funsuite.AnyFunSuite
+import domain.IndicateurVigilance
 import domain.IndicateurVigilance._
 
 class IndicateurVigilanceSpec extends AnyFunSuite:
