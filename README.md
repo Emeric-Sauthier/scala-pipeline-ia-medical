@@ -21,9 +21,9 @@ Voici les différentes tâches identifiées pour la réalisation de ce projet :
 - Tests => Ecriture de tests pour valider le bon fonctionnement du pipeline
 
 Répartition des rôles :
-- Alexis =>
-- Emeric =>
-- Thomas =>
+- Alexis => Couche I/O + Tests
+- Emeric => Transformation des données + Aggrégation + Tests
+- Thomas => Nettoyage des données + Tests
 
 ## Modélisation
 
