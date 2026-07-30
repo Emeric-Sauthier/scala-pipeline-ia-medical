@@ -1,4 +1,4 @@
-import pipeline.Mesure
+import domain.Mesure
 import java.time.LocalDateTime
 import scala.math.Ordering.Implicits.infixOrderingOps
 import scala.util.Try

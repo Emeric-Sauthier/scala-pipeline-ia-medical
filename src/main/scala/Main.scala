@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import storage.LecteurCsv
 
 /**
@@ -25,10 +24,3 @@ object Main {
         sys.exit(1)
     }
 }
-=======
-package pipeline
-
-object Main extends App {
-    println("hello")
-}
->>>>>>> 5f04e67 (Basic input sanitizing)
