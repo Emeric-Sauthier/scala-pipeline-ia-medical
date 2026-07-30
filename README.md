@@ -27,6 +27,7 @@ Répartition des rôles :
 
 ## Architecture du projet
 
+```
 src/
 ├── main/scala/
 │   ├── domain/
@@ -41,6 +42,7 @@ src/
     │   └── ...
     ├── pipeline/
         └── ...
+```
 
 ## Modélisation
 
