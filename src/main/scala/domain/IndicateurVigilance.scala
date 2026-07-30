@@ -1,3 +1,5 @@
+package domain
+
 sealed trait IndicateurVigilance
 
 object IndicateurVigilance {
