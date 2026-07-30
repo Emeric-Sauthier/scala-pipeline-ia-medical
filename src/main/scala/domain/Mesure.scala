@@ -1,3 +1,5 @@
+package domain
+
 import java.time.LocalDateTime
 
 case class Mesure(
