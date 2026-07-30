@@ -7,8 +7,18 @@ import scala.util.Try
 
 object Nettoyer:
     def lireMesures(lignesCSV: List[String]): List[Mesure] = {
-        lignesCSV.map(lireMesure).collect {
+        removeDuplicates(lignesCSV.map(lireMesure).collect {
             case Right(value) => value
+        })
+    }
+
+    def removeDuplicates(vals: List[Mesure]): List[Mesure] = {
+        vals.foldLeft(List.empty) {
+            (acc, item) => if (acc.exists(a => a.patientId == item.patientId && a.timestamp == item.timestamp)) {
+                acc
+            } else {
+                acc.appended(item)
+            }
         }
     }
 
