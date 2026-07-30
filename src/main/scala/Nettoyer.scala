@@ -1,5 +1,6 @@
 import pipeline.Mesure
 import java.time.LocalDateTime
+import scala.math.Ordering.Implicits.infixOrderingOps
 import scala.util.Try
 
 object Nettoyer:
@@ -9,7 +10,14 @@ object Nettoyer:
                 for {
                     _patientId <- lirePatientId(patientId)
                     _timestamp <- lireTimestamp(timestamp)
-                } yield Mesure(_patientId, _timestamp, "", 0, Some(0), Some(0), Some(0), Some(0), Some(0))
+                    _service <- lireService(service)
+                    _age <- lireAge(age)
+                    _frequenceCardiaque <- lireFrequenceCardiaque(frequenceCardiaque)
+                    _tensionSystolique <- lireTensionSystolique(tensionSystolique)
+                    _tensionDiastolique <- lireTensionDiastolique(tensionDiastolique)
+                    _temperature <- lireTemprature(temperature)
+                    _spo2 <- lireSpo2(spo2)
+                } yield Mesure(_patientId, _timestamp, _service, _age, _frequenceCardiaque, _tensionSystolique, _tensionDiastolique, _temperature, _spo2)
             }
             case _ => Left("Pas assez ou trop de champs dans le CSV !")
     }
@@ -22,3 +30,28 @@ object Nettoyer:
         err => Left(s"Timestamp '$timestamp' invalide !"),
         Right.apply
     )
+
+    def lireService(service: String): Either[String, String] = service.trim match
+        case "" => Left("Service vide !")
+        case s => Right(s)
+
+    def lireAge(age: String): Either[String, Int] = age.trim.toIntOption match
+        case None => Left("Âge non spécifié ou invalide !")
+        case Some(age) if age < 0 => Left("Âge négatif !")
+        case Some(age) => Right(age)
+
+    def lireCapteur[T](valeur: String, nom: String, min: T, max: T, convertisseur: String => Option[T])(using Ordering[T]): Either[String, Option[T]] = valeur.trim match
+        case "" => Right(None)
+        case n => convertisseur(n) match
+            case None => Left(s"$nom invalide !")
+            case Some(x) if (x < min || x > max) => Left(s"$nom invalide, valeur aberrante !")
+            case Some(x) => Right(Some(x))
+
+    def lireCapteurInt(valeur: String, nom: String, min: Int, max: Int) = lireCapteur[Int](valeur, nom, min, max, _.toIntOption)
+    def lireCapteurDouble(valeur: String, nom: String, min: Double, max: Double) = lireCapteur[Double](valeur, nom, min, max, _.toDoubleOption)
+
+    def lireFrequenceCardiaque(frequenceCardiaque: String) = lireCapteurInt(frequenceCardiaque, "Fréquence cardiaque", 30, 220)
+    def lireTensionSystolique(tensionSystolique: String) = lireCapteurInt(tensionSystolique, "Tension systolique", 40, 250)
+    def lireTensionDiastolique(tensionDiastolique: String) = lireCapteurInt(tensionDiastolique, "Tension diastolique", 20, 150)
+    def lireTemprature(temperature: String) = lireCapteurDouble(temperature, "Température", 30, 42)
+    def lireSpo2(spo2: String) = lireCapteurInt(spo2, "SpO2", 0, 100)
