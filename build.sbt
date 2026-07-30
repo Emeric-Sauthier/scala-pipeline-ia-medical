@@ -8,9 +8,7 @@ ThisBuild / organizationName := "example"
 lazy val root = (project in file("."))
   .settings(
     name := "scala-pipeline-ia-medical",
-    libraryDependencies ++= Seq(
-      munit % Test
-    ),
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % Test,
     // UTF-8 explicite : les sources contiennent des accents et « °C ».
     scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf-8")
   )
