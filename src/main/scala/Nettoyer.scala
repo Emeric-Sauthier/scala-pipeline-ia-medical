@@ -1,9 +1,17 @@
+package clean
+
 import domain.Mesure
 import java.time.LocalDateTime
 import scala.math.Ordering.Implicits.infixOrderingOps
 import scala.util.Try
 
 object Nettoyer:
+    def lireMesures(lignesCSV: List[String]): List[Mesure] = {
+        lignesCSV.map(lireMesure).collect {
+            case Right(value) => value
+        }
+    }
+
     def lireMesure(ligneCSV: String): Either[String, Mesure] = {
         ligneCSV.split(",") match
             case Array(patientId, timestamp, service, age, frequenceCardiaque, tensionSystolique, tensionDiastolique, temperature, spo2) => {
