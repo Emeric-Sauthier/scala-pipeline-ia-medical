@@ -18,8 +18,9 @@ object Main {
         println(s"Source : $CheminEntree")
         println(s"Lignes : ${lignes.size}")
         Nettoyer.lireMesures(lignes) match
-          case x => {
-            println(s"${x.size} lignes valides")
+          case (bad, good) => {
+            println(s"${bad.size} lignes invalides")
+            println(s"${good.size} lignes valides")
           }
 
 

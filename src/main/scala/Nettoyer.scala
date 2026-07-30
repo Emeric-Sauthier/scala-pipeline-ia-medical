@@ -1,15 +1,15 @@
 package clean
 
+import domain.ErreurParsing
 import domain.Mesure
 import java.time.LocalDateTime
 import scala.math.Ordering.Implicits.infixOrderingOps
 import scala.util.Try
 
 object Nettoyer:
-    def lireMesures(lignesCSV: List[String]): List[Mesure] = {
-        removeDuplicates(lignesCSV.map(lireMesure).collect {
-            case Right(value) => value
-        })
+    def lireMesures(lignesCSV: List[String]): (List[String], List[Mesure]) = {
+        lignesCSV.map(lireMesure).partitionMap(identity) match
+            case (bad, good) => (bad, removeDuplicates(good))
     }
 
     def removeDuplicates(vals: List[Mesure]): List[Mesure] = {
