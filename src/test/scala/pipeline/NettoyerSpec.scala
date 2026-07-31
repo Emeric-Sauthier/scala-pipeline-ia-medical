@@ -3,7 +3,7 @@ package pipelineTest
 import org.scalatest.funsuite.AnyFunSuite
 import java.time.LocalDateTime
 import domain.ErreurParsing
-import clean.Nettoyer
+import pipeline.Nettoyer
 
 class NettoyerSpec extends AnyFunSuite:
 

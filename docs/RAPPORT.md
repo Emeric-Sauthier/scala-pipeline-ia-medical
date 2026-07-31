@@ -44,7 +44,7 @@ scala-pipeline-ia-medical/
 └── src/
     ├── main/scala/
     │   ├── Main.scala               Point d'entrée : ordonnancement des 5 étapes
-    │   ├── Nettoyer.scala           Parsing et nettoyage (package clean)
+    │   ├── Nettoyer.scala           Parsing et nettoyage (package pipeline)
     │   ├── domain/                  Modèle métier, 100 % immuable
     │   │   ├── Mesure.scala                 case class d'un relevé brut
     │   │   ├── MesureTransformee.scala      Relevé enrichi (indicateurs dérivés + vigilance)

@@ -1,4 +1,4 @@
-package clean
+package pipeline
 
 import domain.ErreurParsing
 import domain.Mesure

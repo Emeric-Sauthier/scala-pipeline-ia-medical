@@ -1,4 +1,4 @@
-import clean.Nettoyer
+import pipeline.Nettoyer
 
 import java.nio.file.{Files, Paths}
 import java.nio.charset.StandardCharsets
