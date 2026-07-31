@@ -1,7 +1,5 @@
 package domain
 
-import domain.IndicateurVigilance
-
 final case class ObservationMesure(
     frequenceCardiaque: Option[IndicateurVigilance],
     tensionSystolique: Option[IndicateurVigilance],
