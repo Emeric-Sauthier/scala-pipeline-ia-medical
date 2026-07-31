@@ -33,7 +33,7 @@ object Nettoyer:
                     _frequenceCardiaque <- lireFrequenceCardiaque(i, frequenceCardiaque)
                     _tensionSystolique <- lireTensionSystolique(i, tensionSystolique)
                     _tensionDiastolique <- lireTensionDiastolique(i, tensionDiastolique)
-                    _temperature <- lireTemprature(i, temperature)
+                    _temperature <- lireTemperature(i, temperature)
                     _spo2 <- lireSpo2(i, spo2)
                 } yield Mesure(_patientId, _timestamp, _service, _age, _frequenceCardiaque, _tensionSystolique, _tensionDiastolique, _temperature, _spo2)
             }
@@ -73,5 +73,5 @@ object Nettoyer:
     def lireFrequenceCardiaque(i: Int, frequenceCardiaque: String) = lireCapteurInt(i, frequenceCardiaque, "Fréquence cardiaque", 30, 220)
     def lireTensionSystolique(i: Int, tensionSystolique: String) = lireCapteurInt(i, tensionSystolique, "Tension systolique", 40, 250)
     def lireTensionDiastolique(i: Int, tensionDiastolique: String) = lireCapteurInt(i, tensionDiastolique, "Tension diastolique", 20, 150)
-    def lireTemprature(i: Int, temperature: String) = lireCapteurDouble(i, temperature, "Température", 30, 42)
+    def lireTemperature(i: Int, temperature: String) = lireCapteurDouble(i, temperature, "Température", 30, 42)
     def lireSpo2(i: Int, spo2: String) = lireCapteurInt(i, spo2, "SpO2", 0, 100)
