@@ -23,17 +23,8 @@ private[storage] object Diagnostic {
       case _: java.nio.file.NoSuchFileException => "fichier introuvable"
       case _: java.nio.file.InvalidPathException => "chemin invalide"
       case _: java.nio.charset.CharacterCodingException => "le fichier n'est pas encodé en UTF-8"
-
-      // Sous Windows, viser un dossier lève AccessDeniedException. « Accès refusé »
-      // serait trompeur pour ce qui est le plus souvent une faute de frappe dans
-      // le chemin, d'où la distinction.
-      case _: java.nio.file.AccessDeniedException =>
-        if (estUnDossier(chemin)) "le chemin désigne un dossier, pas un fichier"
-        else "accès refusé"
+      case _: java.nio.file.AccessDeniedException => "accès refusé"
 
       case _ => Option(erreur.getMessage).filter(_.nonEmpty).getOrElse(erreur.getClass.getSimpleName)
     }
-
-  private def estUnDossier(chemin: String): Boolean =
-    Try(Files.isDirectory(Paths.get(chemin))).getOrElse(false)
 }

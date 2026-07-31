@@ -17,6 +17,9 @@ import domain.ErreurPipeline
  */
 object EcrivainFichier {
 
+  private def estUnDossier(chemin: String): Boolean =
+    Try(Files.isDirectory(Paths.get(chemin))).getOrElse(false)
+
   /**
    * Écrit le contenu, en créant les dossiers parents manquants.
    *
@@ -31,12 +34,16 @@ object EcrivainFichier {
    * `ErreurPipeline.EcritureImpossible` : aucune exception ne sort d'ici.
    */
   def ecrire(chemin: String, contenu: String): Either[ErreurPipeline, Path] =
-    Try {
-      val fichier = Paths.get(chemin)
-      Option(fichier.toAbsolutePath.getParent).foreach(parent => Files.createDirectories(parent))
-      Files.write(fichier, contenu.getBytes(StandardCharsets.UTF_8))
-    }.fold(
-      erreur => Left(ErreurPipeline.EcritureImpossible(chemin, Diagnostic.cause(chemin, erreur))),
-      ecrit => Right(ecrit)
-    )
+    if estUnDossier(chemin) then {
+      Left(ErreurPipeline.EcritureImpossible(chemin, "le chemin désigne un dossier, pas un fichier"))
+    } else {
+      Try {
+        val fichier = Paths.get(chemin)
+        Option(fichier.toAbsolutePath.getParent).foreach(parent => Files.createDirectories(parent))
+        Files.write(fichier, contenu.getBytes(StandardCharsets.UTF_8))
+      }.fold(
+        erreur => Left(ErreurPipeline.EcritureImpossible(chemin, Diagnostic.cause(chemin, erreur))),
+        ecrit => Right(ecrit)
+      )
+    }
 }

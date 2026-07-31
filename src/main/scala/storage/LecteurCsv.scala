@@ -22,6 +22,9 @@ import domain.ErreurPipeline
  */
 object LecteurCsv {
 
+  private def estUnDossier(chemin: String): Boolean =
+    Try(Files.isDirectory(Paths.get(chemin))).getOrElse(false)
+
   /**
    * Lit le fichier et renvoie ses lignes.
    *
@@ -35,10 +38,13 @@ object LecteurCsv {
    * Un fichier vide n'est pas une erreur : il renvoie une liste vide. C'est du
    * contenu, pas un problème d'ouverture.
    */
-  def lire(chemin: String): Either[ErreurPipeline, List[String]] =
+  def lire(chemin: String): Either[ErreurPipeline, List[String]] = if estUnDossier(chemin) then {
+    Left(ErreurPipeline.LectureImpossible(chemin, "le chemin désigne un dossier, pas un fichier"))
+  } else {
     Try(Files.readAllLines(Paths.get(chemin), StandardCharsets.UTF_8).asScala.toList)
       .fold(
         erreur => Left(ErreurPipeline.LectureImpossible(chemin, Diagnostic.cause(chemin, erreur))),
         lignes => Right(lignes)
       )
+  }
 }

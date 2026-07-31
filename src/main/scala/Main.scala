@@ -1,5 +1,7 @@
 import storage.LecteurCsv
 import clean.Nettoyer
+import java.nio.file.{Files, Paths}
+import java.nio.charset.StandardCharsets
 
 /**
  * Point d'entrée du pipeline — coquille impérative.
