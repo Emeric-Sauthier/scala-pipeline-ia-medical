@@ -1,4 +1,5 @@
 import storage.LecteurCsv
+import clean.Nettoyer
 
 /**
  * Point d'entrée du pipeline — coquille impérative.
@@ -16,6 +17,13 @@ object Main {
       case Right(lignes) =>
         println(s"Source : $CheminEntree")
         println(s"Lignes : ${lignes.size}")
+        Nettoyer.lireMesures(lignes) match
+          case (bad, good) => {
+            println(s"${bad.size} lignes invalides")
+            println(s"${good.size} lignes valides")
+            bad.foreach(e => { println(s"[ERREUR]: ${e.message}") })
+          }
+
 
       // Les étapes suivantes du pipeline s'inséreront ici, en consommant `lignes`.
 

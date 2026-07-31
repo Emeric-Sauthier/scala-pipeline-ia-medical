@@ -11,8 +11,8 @@ object ErreurParsing {
     val message: String = s"$obtenu champ(s) au lieu de $attendu"
   }
 
-  case class ChampNonNumerique(numeroLigne: Int, champ: String, valeur: String) extends ErreurParsing {
-    val message: String = s"champ '$champ' non numérique : « $valeur »"
+  case class ChampNonNumerique(numeroLigne: Int, valeur: String) extends ErreurParsing {
+    val message: String = s"champ non numérique : « $valeur »"
   }
 
   case class HorodatageInvalide(numeroLigne: Int, valeur: String) extends ErreurParsing {
@@ -21,6 +21,10 @@ object ErreurParsing {
 
   case class ChampObligatoireVide(numeroLigne: Int, champ: String) extends ErreurParsing {
     val message: String = s"champ obligatoire vide : '$champ'"
+  }
+
+  case class ValeurNumeriqueInvalide(numeroLigne: Int, valeur: String, raison: String) extends ErreurParsing {
+    val message: String = s"valeur '$valeur' invalide : '$raison'"
   }
 }
 
