@@ -1,7 +1,7 @@
 package storageTest
 
 import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Path}
+import java.nio.file.{Files, Path, Paths}
 
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -38,9 +38,10 @@ class LecteurCsvSpec extends AnyFunSuite:
 
     // --- Lecture nominale -------------------------------------------------------
 
-    test("lit toutes les lignes du fichier livré, en-tête compris") {
-        // 1 ligne d'en-tête + 25 lignes de relevés.
-        assert(lignesExemple.size == 26)
+    test("aucune ligne du fichier livré n'est perdue ni ajoutée") {
+        val brut = String(Files.readAllBytes(Paths.get(cheminExemple)), StandardCharsets.UTF_8)
+        assert(lignesExemple.size == brut.linesIterator.size)
+        assert(lignesExemple.size > 1, "le fichier doit contenir un en-tête et au moins un relevé")
     }
 
     test("les lignes sont rendues dans l'ordre du fichier") {
