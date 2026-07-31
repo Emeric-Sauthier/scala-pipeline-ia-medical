@@ -44,7 +44,6 @@ scala-pipeline-ia-medical/
 └── src/
     ├── main/scala/
     │   ├── Main.scala               Point d'entrée : ordonnancement des 5 étapes
-    │   ├── Nettoyer.scala           Parsing et nettoyage (package pipeline)
     │   ├── domain/                  Modèle métier, 100 % immuable
     │   │   ├── Mesure.scala                 case class d'un relevé brut
     │   │   ├── MesureTransformee.scala      Relevé enrichi (indicateurs dérivés + vigilance)
@@ -53,6 +52,7 @@ scala-pipeline-ia-medical/
     │   │   ├── Statistique.scala            Structures de résultats + ADT ParametreMesure
     │   │   └── Erreurs.scala                ADT ErreurParsing et ErreurPipeline
     │   ├── pipeline/                Cœur fonctionnel, aucune I/O
+    |   |   ├── Nettoyer.scala               Parsing et nettoyage (package pipeline)
     │   │   ├── Classification.scala         Mesure -> niveaux de vigilance
     │   │   ├── Transformation.scala         Indicateurs dérivés + enrichissement
     │   │   └── Aggregation.scala            Statistiques globales / patient / service
@@ -281,17 +281,7 @@ Les fonctions du cœur étant pures, ces tests s'écrivent sans montage de fichi
 
 ## 6. Difficultés rencontrées
 
-**Sérialisation des `Map` à clé non textuelle.** upickle ne produit un objet JSON que pour les `Map` dont la clé est une `String` ; pour tout autre type il émet un tableau de paires du type `[["spo2", {...}], ...]`, qu'un tableau de bord ne sait pas exploiter. Il a fallu écrire à la main le `Writer` de `ResumeStatistique` et passer par `ujson.Obj.from` pour reprendre le contrôle de la forme produite.
-
-**Ordre d'initialisation des `Writer`.** Un `Writer` dérivé par `macroW` capture les `Writer` de ses champs au moment de son initialisation. Déclarer un type composite avant ses feuilles produit un `NullPointerException` à l'exécution, et non une erreur de compilation. Le diagnostic a été long ; la règle « feuilles avant composites » est désormais documentée directement dans `JsonFormat`.
-
-**Déterminisme du JSON.** Au delà de quatre entrées, une `Map` immuable de Scala est une table de hachage dont l'ordre d'itération n'est pas spécifié. Les diffs de JSON entre deux exécutions devenaient illisibles. La solution retenue est de parcourir la liste canonique `ParametreMesure.parametres` plutôt que la `Map`, ce qui fixe l'ordre des clés et suit l'ordre clinique des paramètres.
-
-**Distinguer manquant et aberrant.** La tentation initiale était de traiter les deux cas de la même façon. La règle finalement retenue est explicite : une valeur absente donne `None` et la ligne est conservée, une valeur hors plage physiologique fait rejeter la ligne entière avec son motif. C'est ce qui explique que les effectifs diffèrent d'un paramètre à l'autre dans le JSON.
-
-**Encodage.** Le projet est développé sous Windows, dont l'encodage JVM par défaut n'est pas UTF-8. Les accents et le caractère `°` étaient corrompus en lecture comme en écriture. UTF-8 est donc imposé explicitement dans `build.sbt` ainsi que dans `LecteurCsv` et `EcrivainFichier`. Les captures de console montrent encore des accents mal rendus, mais il s'agit uniquement de l'affichage du terminal PowerShell : le CSV lu et le JSON écrit sont bien en UTF-8.
-
-**Limites connues.** La ligne d'en-tête du CSV n'est pas retirée avant le parsing : elle est comptabilisée comme une erreur d'horodatage. Le résultat est correct puisque la ligne est bien écartée, mais le rapport de nettoyage annonce une erreur de plus qu'il n'y a de vrais défauts de données. Par ailleurs, `Main` recevrait aujourd'hui une liste vide sans le signaler comme une erreur métier, alors que l'ADT `ErreurPipeline.AucuneLigneExploitable` est prévu pour ce cas.
+**Exceptions d'I/O dépendantes du système de fichiers.** Les tests de la couche I/O ne passaient pas d'un poste à l'autre : lorsqu'on tente d'ouvrir un chemin qui désigne un dossier et non un fichier, l'exception levée par la JVM n'est pas la même sous Windows et sous Linux. Le motif d'erreur remonté par le pipeline variait donc selon le système, ce qui rendait les assertions de test non reproductibles. La correction a consisté à traiter le cas explicitement en amont, avec `Files.isDirectory`, plutôt que de dépendre de l'exception levée à l'ouverture : `LecteurCsv` et `EcrivainFichier` renvoient désormais le même motif « le chemin désigne un dossier, pas un fichier » quel que soit le système.
 
 ---
 
